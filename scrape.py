@@ -1,7 +1,9 @@
 import urllib.request as ureq
 from bs4 import BeautifulSoup as soup
-import pandas as pd
+#import pandas as pd
+import json
 
+music_api = '18cae4bcb1d5f9b76d8ac7c0e20d1d20'
 my_url = "https://en.wikipedia.org/wiki/List_of_best-selling_music_artists"
 
 uclient = ureq.urlopen(my_url)
@@ -26,17 +28,16 @@ artists[90] = "Black Eyed Peas"
 artists[97] = "Tupac"
 artists.remove("Johnny Hallyday")
 
-for artist in artists:
-    artist_search = artist.replace(" ", "+")
-    lyrics_url = "https://search.azlyrics.com/search.php?q=" + artist_search
-    x = ureq.urlopen(lyrics_url)
-    x_html = x.read()
-    x.close()
-    x_soup = soup(x_html, "html.parser")
-    link = x_soup.td.a["href"]
-    artists_links.append(link)
-print(artists_links)
+def artist_link(artist):
+    api_key = music_api
+    q_artist = artist.lower().replace(" ", "%20")
+    url = 'https://api.musixmatch.com/ws/1.1/artist.search?q_artist='
+    final_url = url + q_artist + '&page_size=5&apikey=' + api_key
+    json_obj = ureq.urlopen(final_url)
+    data = json.load(json_obj)
+    print(data['message']['body']['artist_list'][0]['artist'])
+artist_link('The Beatles')
 
-d = {'Artists':artists, 'Links':artists_links}
-df = pd.DataFrame(data=d)
-df.to_csv("music-data.csv")
+#d = {'Artists':artists, 'Links':artists_links}
+#df = pd.DataFrame(data=d)
+#df.to_csv("music-data.csv")
