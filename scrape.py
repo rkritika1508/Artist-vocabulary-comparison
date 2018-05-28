@@ -1,7 +1,5 @@
 import urllib.request as ureq
-import wikipedia
 from bs4 import BeautifulSoup as soup
-import re
 import pandas as pd
 
 my_url = "https://en.wikipedia.org/wiki/List_of_best-selling_music_artists"
