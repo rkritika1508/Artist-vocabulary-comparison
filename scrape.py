@@ -39,5 +39,5 @@ def artist_link(artist):
 for artist in artists:
     artist_link(artist)
 
-data = pd.DataFrame.from_dict(artists_details, orient='index')
-data.to_csv('artist_data.csv')
+artist_df = pd.DataFrame.from_dict(artists_details, orient='index')
+artist_df.to_csv('artist_data.csv')
