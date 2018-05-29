@@ -1,6 +1,6 @@
 import urllib.request as ureq
 from bs4 import BeautifulSoup as soup
-#import pandas as pd
+import pandas as pd
 import json
 
 music_api = '18cae4bcb1d5f9b76d8ac7c0e20d1d20'
@@ -12,8 +12,7 @@ uclient.close()
 page_soup = soup (page_html, "html.parser")
 containers = page_soup.findAll("th",{"scope":"row"})
 artists = []
-artists_links = []
-num=0
+artists_details = {}
 
 for i in range(len(containers)-17):
     artists.append(containers[i].a.text)
@@ -32,12 +31,13 @@ def artist_link(artist):
     api_key = music_api
     q_artist = artist.lower().replace(" ", "%20")
     url = 'https://api.musixmatch.com/ws/1.1/artist.search?q_artist='
-    final_url = url + q_artist + '&page_size=5&apikey=' + api_key
+    final_url = url + q_artist + '&apikey=' + api_key
     json_obj = ureq.urlopen(final_url)
     data = json.load(json_obj)
-    print(data['message']['body']['artist_list'][0]['artist'])
-artist_link('The Beatles')
+    artists_details[artist] = {'artist_id': data['message']['body']['artist_list'][0]['artist']['artist_id']}
 
-#d = {'Artists':artists, 'Links':artists_links}
-#df = pd.DataFrame(data=d)
-#df.to_csv("music-data.csv")
+for artist in artists:
+    artist_link(artist)
+
+data = pd.DataFrame.from_dict(artists_details, orient='index')
+data.to_csv('artist_data.csv')
