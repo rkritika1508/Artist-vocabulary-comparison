@@ -1,43 +1,36 @@
 import urllib.request as ureq
 from bs4 import BeautifulSoup as soup
-import pandas as pd
-import json
+import lyricsgenius as genius
 
-music_api = '18cae4bcb1d5f9b76d8ac7c0e20d1d20'
 my_url = "https://en.wikipedia.org/wiki/List_of_best-selling_music_artists"
 
 uclient = ureq.urlopen(my_url)
 page_html = uclient.read()
 uclient.close()
 page_soup = soup (page_html, "html.parser")
-containers = page_soup.findAll("th",{"scope":"row"})
+containers = page_soup.findAll("th", {"scope":"row"})
 artists = []
-artists_details = {}
 
 for i in range(len(containers)-17):
     artists.append(containers[i].a.text)
 
+
 artists.remove("B'z")
 artists.remove("Ayumi Hamasaki")
 artists.remove("Julio Iglesias")
-artists[52] = "Simon Garfunkel"
+artists.remove("Johnny Hallyday")
 artists[38] = "Beyonce"
 artists[67] = "Beach Boys"
-artists[90] = "Black Eyed Peas"
-artists[97] = "Tupac"
-artists.remove("Johnny Hallyday")
+artists[89] = "Black Eyed Peas"
+artists[96] = "2pac"
 
-def artist_link(artist):
-    api_key = music_api
-    q_artist = artist.lower().replace(" ", "%20")
-    url = 'https://api.musixmatch.com/ws/1.1/artist.search?q_artist='
-    final_url = url + q_artist + '&apikey=' + api_key
-    json_obj = ureq.urlopen(final_url)
-    data = json.load(json_obj)
-    artists_details[artist] = {'artist_id': data['message']['body']['artist_list'][0]['artist']['artist_id']}
+client_access_token = 'dF8LN5u4DZhEd6S1W-IxQ8HIYnBNdP054JcEKl5NVVAFyFFJhYRtiGB3nplMQx3l'
+api = genius.Genius(client_access_token)
 
-for artist in artists:
-    artist_link(artist)
 
-artist_df = pd.DataFrame.from_dict(artists_details, orient='index')
-artist_df.to_csv('artist_data.csv')
+def artist_search(name):
+    artist = api.search_artist(name, max_songs=2000)
+    artist.save_lyrics()
+
+
+artist_search(artists[2])
