@@ -24,7 +24,7 @@ artists[67] = "Beach Boys"
 artists[89] = "Black Eyed Peas"
 artists[96] = "2pac"
 
-client_access_token = 'dF8LN5u4DZhEd6S1W-IxQ8HIYnBNdP054JcEKl5NVVAFyFFJhYRtiGB3nplMQx3l'
+client_access_token = 'dF8LN5u4DZhEd6S1W-IxQ8HIYnBNdP054JcEKl5NVVAFyFFJhYRtiGB3n'
 api = genius.Genius(client_access_token)
 
 
